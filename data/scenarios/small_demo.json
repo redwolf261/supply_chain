@@ -1,0 +1,27 @@
+{
+  "name": "small_demo",
+  "seed": 1,
+  "nodes": [
+    { "name": "S1", "type": "supplier", "supply": 80, "unitPurchaseCost": 4 },
+    { "name": "S2", "type": "supplier", "supply": 60, "unitPurchaseCost": 5 },
+    { "name": "S3-backup", "type": "supplier", "supply": 70, "unitPurchaseCost": 7, "isBackup": true, "activationCost": 40 },
+    { "name": "W1", "type": "warehouse", "inventory": 10, "holdingCostPerUnit": 1 },
+    { "name": "W2", "type": "warehouse", "inventory": 0 },
+    { "name": "D1", "type": "distribution_center" },
+    { "name": "C1", "type": "customer", "demand": 40, "shortagePenaltyPerUnit": 50 },
+    { "name": "C2", "type": "customer", "demand": 50, "shortagePenaltyPerUnit": 50 },
+    { "name": "C3", "type": "customer", "demand": 30, "shortagePenaltyPerUnit": 50 }
+  ],
+  "edges": [
+    { "from": "S1", "to": "W1", "capacity": 60, "costPerUnit": 2, "transitTime": 4 },
+    { "from": "S1", "to": "W2", "capacity": 40, "costPerUnit": 3, "transitTime": 6 },
+    { "from": "S2", "to": "W2", "capacity": 50, "costPerUnit": 2, "transitTime": 5 },
+    { "from": "S3-backup", "to": "D1", "capacity": 70, "costPerUnit": 3, "transitTime": 8 },
+    { "from": "W1", "to": "C1", "capacity": 45, "costPerUnit": 1, "transitTime": 2 },
+    { "from": "W1", "to": "D1", "capacity": 30, "costPerUnit": 2, "transitTime": 3 },
+    { "from": "W2", "to": "C2", "capacity": 55, "costPerUnit": 1, "transitTime": 2 },
+    { "from": "W2", "to": "D1", "capacity": 30, "costPerUnit": 2, "transitTime": 3 },
+    { "from": "D1", "to": "C2", "capacity": 25, "costPerUnit": 2, "transitTime": 2 },
+    { "from": "D1", "to": "C3", "capacity": 40, "costPerUnit": 1, "transitTime": 2 }
+  ]
+}

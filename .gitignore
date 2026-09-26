@@ -1,0 +1,40 @@
+# Build output (CMake / Ninja) and compiled binaries
+build/
+build-*/
+cmake-build-*/
+*.o
+*.obj
+*.a
+*.lib
+*.exe
+*.dll
+*.pdb
+*.ilk
+
+# Frontend dependencies and generated output
+node_modules/
+frontend/dist/
+frontend/e2e-output/
+frontend/coverage/
+*.tsbuildinfo
+
+# Python caches
+__pycache__/
+*.pyc
+
+# Generated scenario files (the folder itself is kept)
+data/generated/*
+!data/generated/.gitkeep
+
+# Temporary files and logs
+*.log
+*.tmp
+*.bak
+*~
+
+# Editor and OS files
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
