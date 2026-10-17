@@ -1,0 +1,54 @@
+/* Design tokens. Categorical series colors follow the validated reference palette (fixed order, never cycled).
+   Dark values are separately stepped for the dark surface, declared under both the OS media query and the
+   manual toggle so the viewer's choice wins both ways. */
+:root {
+  color-scheme: light;
+  --bg: #f3f2ee;
+  --surface: #fcfcfb;
+  --surface-2: #f0efea;
+  --surface-3: #e7e5df;
+  --text: #0b0b0b;
+  --text-2: #52514e;
+  --text-3: #6c6b65;
+  --border: #dad8d0;
+  --grid: #e6e4de;
+  --accent: #2a78d6;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(42, 120, 214, 0.12);
+  --good: #17794a;
+  --warn: #9a6700;
+  --bad: #c42b2b;
+  --bad-soft: rgba(196, 43, 43, 0.1);
+  --shadow: 0 1px 2px rgba(11, 11, 11, 0.06), 0 4px 16px rgba(11, 11, 11, 0.05);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+  --series-5: #e87ba4; --series-6: #008300; --series-7: #6250d6; --series-8: #e34948;
+  --highlight: #6250d6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #111110; --surface: #1a1a19; --surface-2: #222220; --surface-3: #2b2b28;
+    --text: #f0efec; --text-2: #c3c2b7; --text-3: #9a998f;
+    --border: #363633; --grid: #2d2d2a;
+    --accent: #3987e5; --accent-ink: #0b0b0b; --accent-soft: rgba(57, 135, 229, 0.18);
+    --good: #46b97b; --warn: #e0a02c; --bad: #ee7373; --bad-soft: rgba(238, 115, 115, 0.14);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+    --series-5: #d55181; --series-6: #008300; --series-7: #9085e9; --series-8: #e66767;
+    --highlight: #9085e9;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #111110; --surface: #1a1a19; --surface-2: #222220; --surface-3: #2b2b28;
+  --text: #f0efec; --text-2: #c3c2b7; --text-3: #9a998f;
+  --border: #363633; --grid: #2d2d2a;
+  --accent: #3987e5; --accent-ink: #0b0b0b; --accent-soft: rgba(57, 135, 229, 0.18);
+  --good: #46b97b; --warn: #e0a02c; --bad: #ee7373; --bad-soft: rgba(238, 115, 115, 0.14);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.3);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+  --series-5: #d55181; --series-6: #008300; --series-7: #9085e9; --series-8: #e66767;
+  --highlight: #9085e9;
+}
