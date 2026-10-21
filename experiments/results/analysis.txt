@@ -1,0 +1,448 @@
+
+===== Experiment A =====
+   x                    label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+1.00        dijkstra_dispatch               5             0  11,166.80 5,397.76       67.80             0.85             0.06                33.02     0
+1.00            min_cost_flow               5             0  10,741.20 5,256.76       65.20             0.86             0.11                28.07     2
+1.00                   greedy               5             0   8,068.60 2,478.60        9.40             0.98             1.49                 0.00     5
+1.00         bottleneck_aware               5             0   8,077.20 2,492.47        9.40             0.98             1.24                 0.08     4
+1.00 bottleneck_aware_lambda0               5             0   8,068.60 2,478.60        9.40             0.98             1.21                 0.00     5
+2.00        dijkstra_dispatch               5             0  22,298.00 5,394.87      120.20             0.87             0.18                32.14     0
+2.00            min_cost_flow               5             0  20,226.60 5,553.58       90.00             0.90             0.54                19.50     1
+2.00                   greedy               5             0  16,734.00 2,552.14       11.60             0.99            20.09                 0.14     4
+2.00         bottleneck_aware               5             0  16,753.40 2,572.69       11.60             0.99            19.64                 0.24     4
+2.00 bottleneck_aware_lambda0               5             0  16,734.00 2,552.14       11.60             0.99            19.12                 0.14     4
+3.00        dijkstra_dispatch               5             0  24,284.40 3,753.70       42.00             0.97             0.40                10.87     0
+3.00            min_cost_flow               5             0  23,400.60 3,122.30       36.40             0.97             1.04                 6.92     3
+3.00                   greedy               5             0  21,868.80 1,954.56       17.00             0.99            25.26                 0.00     5
+3.00         bottleneck_aware               5             0  21,868.80 1,954.56       17.00             0.99            25.54                 0.00     5
+3.00 bottleneck_aware_lambda0               5             0  21,868.80 1,954.56       17.00             0.99            25.94                 0.00     5
+4.00        dijkstra_dispatch               5             0  39,727.80 5,745.54      169.60             0.91             0.76                21.93     0
+4.00            min_cost_flow               5             0  35,610.20 3,510.21       95.00             0.95             2.21                 9.91     0
+4.00                   greedy               5             0  32,616.80 3,598.29       39.60             0.98           188.80                 0.34     4
+4.00         bottleneck_aware               5             0  32,495.60 3,456.92       40.80             0.98           186.37                 0.00     5
+4.00 bottleneck_aware_lambda0               5             0  32,616.80 3,598.29       39.60             0.98           192.73                 0.34     4
+6.00        dijkstra_dispatch               5             0  52,445.60 9,889.30      103.60             0.96             1.82                16.10     0
+6.00            min_cost_flow               5             0  48,239.20 8,306.37       61.60             0.98             4.64                 7.04     2
+6.00                   greedy               5             0  44,925.60 4,282.05       11.60             1.00           358.45                 0.00     5
+6.00         bottleneck_aware               5             0  44,925.60 4,282.05       11.60             1.00           346.94                 0.00     5
+6.00 bottleneck_aware_lambda0               5             0  44,925.60 4,282.05       11.60             1.00           353.84                 0.00     5
+8.00        dijkstra_dispatch               5             0  68,155.20 6,627.71      129.20             0.97             3.26                14.22     0
+8.00            min_cost_flow               5             0  63,590.60 6,120.22       85.80             0.98             8.98                 6.65     1
+8.00                   greedy               5             0  59,574.40 3,566.90       31.20             0.99           910.94                 0.00     5
+8.00         bottleneck_aware               5             0  59,574.40 3,566.90       31.20             0.99           924.30                 0.00     5
+8.00 bottleneck_aware_lambda0               5             0  59,574.40 3,566.90       31.20             0.99           915.38                 0.00     5
+
+  mean runtime (ms) and peak heap (KB) by network size:
+label       bottleneck_aware  bottleneck_aware_lambda0  dijkstra_dispatch  greedy  min_cost_flow
+mean_nodes                                                                                      
+27.0                    1.24                      1.21               0.06    1.49           0.11
+54.0                   19.64                     19.12               0.18   20.09           0.54
+81.0                   25.54                     25.94               0.40   25.26           1.04
+108.0                 186.37                    192.73               0.76  188.80           2.21
+162.0                 346.94                    353.84               1.82  358.45           4.64
+216.0                 924.30                    915.38               3.26  910.94           8.98
+label       bottleneck_aware  bottleneck_aware_lambda0  dijkstra_dispatch  greedy  min_cost_flow
+mean_nodes                                                                                      
+27.0                    23.8                      23.8                3.0    23.8           13.1
+54.0                    51.1                      51.1                5.9    51.0           26.7
+81.0                    67.7                      67.7                8.5    67.7           46.5
+108.0                  102.9                     102.9               12.2   102.8           63.9
+162.0                  136.6                     136.6               17.1   136.6           93.4
+216.0                  216.7                     216.8               25.1   216.7          158.9
+
+  empirical growth exponent (slope of log runtime vs log nodes, 6 sizes, 5 runs each):
+    runtime bottleneck_aware             n^3.13     heap n^1.03
+    runtime bottleneck_aware_lambda0     n^3.15     heap n^1.03
+    runtime dijkstra_dispatch            n^1.95     heap n^1.02
+    runtime greedy                       n^3.05     heap n^1.03
+    runtime min_cost_flow                n^2.10     heap n^1.18
+
+===== Experiment B =====
+   x                    label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+0.00        dijkstra_dispatch              30             0   6,155.10   980.71        1.03             1.00             0.07                 4.37     0
+0.00            min_cost_flow              30             0   5,897.10   863.47        0.00             1.00             0.17                 0.06    26
+0.00                   greedy              30             0   5,897.10   863.47        0.00             1.00             0.71                 0.06    26
+0.00         bottleneck_aware              30             0   5,897.10   863.47        0.00             1.00             0.55                 0.06    26
+0.00 bottleneck_aware_lambda0              30             0   5,897.10   863.47        0.00             1.00             0.52                 0.06    26
+0.00                    exact              30             0   5,893.20   859.18        0.00             1.00             0.99                 0.00    30
+0.10        dijkstra_dispatch              30             0   7,773.90 1,664.54       17.67             0.96             0.07                14.44     0
+0.10            min_cost_flow              30             0   7,441.73 1,559.90       14.70             0.96             0.15                 9.58    13
+0.10                   greedy              30             0   6,869.40 1,215.07        3.60             0.99             0.91                 0.91    20
+0.10         bottleneck_aware              30             0   6,869.40 1,215.07        3.60             0.99             0.75                 0.91    20
+0.10 bottleneck_aware_lambda0              30             0   6,869.40 1,215.07        3.60             0.99             0.72                 0.91    20
+0.10                    exact              30             0   6,802.27 1,166.72        3.60             0.99             1.72                 0.00    30
+0.20        dijkstra_dispatch              30             0   8,552.80 1,947.51       22.77             0.95             0.08                17.11     0
+0.20            min_cost_flow              30             0   8,163.10 1,838.94       19.37             0.96             0.19                11.79     7
+0.20                   greedy              30             0   7,381.63 1,288.55        4.47             0.99             1.37                 1.08    17
+0.20         bottleneck_aware              30             0   7,403.83 1,296.33        4.47             0.99             1.23                 1.38    17
+0.20 bottleneck_aware_lambda0              30             0   7,381.63 1,288.55        4.47             0.99             1.20                 1.08    17
+0.20                    exact              30             0   7,300.13 1,261.50        4.47             0.99             2.97                 0.00    30
+0.30        dijkstra_dispatch              30             0  11,102.90 3,222.43       60.17             0.87             0.07                31.43     0
+0.30            min_cost_flow              30             0  10,492.73 3,078.12       52.60             0.88             0.17                24.52     3
+0.30                   greedy              30             0   8,558.43 1,483.77        8.80             0.98             1.75                 2.51     9
+0.30         bottleneck_aware              30             0   8,563.00 1,479.83        8.80             0.98             1.66                 2.57     7
+0.30 bottleneck_aware_lambda0              30             0   8,558.43 1,483.77        8.80             0.98             1.73                 2.51     9
+0.30                    exact              30             0   8,361.23 1,488.55        8.07             0.98             4.31                 0.00    30
+0.40        dijkstra_dispatch              30             0  12,928.73 3,512.10       81.40             0.82             0.07                40.46     0
+0.40            min_cost_flow              30             0  12,257.70 3,304.11       72.47             0.84             0.14                33.60     1
+0.40                   greedy              30             0   9,429.73 1,971.48       13.03             0.97             2.35                 2.25     6
+0.40         bottleneck_aware              30             0   9,426.67 1,972.44       13.03             0.97             2.19                 2.21     6
+0.40 bottleneck_aware_lambda0              30             0   9,429.73 1,971.48       13.03             0.97             2.16                 2.25     6
+0.40                    exact              30             0   9,224.00 1,926.02       13.03             0.97             8.41                 0.00    30
+0.50        dijkstra_dispatch              30             0  18,234.67 5,421.12      162.57             0.67             0.05                50.73     0
+0.50            min_cost_flow              30             0  17,766.37 5,495.26      158.87             0.67             0.12                46.53     0
+0.50                   greedy              30             0  12,483.40 3,227.04       48.70             0.90             3.03                 3.59     5
+0.50         bottleneck_aware              30             0  12,504.07 3,227.07       48.70             0.90             2.83                 3.77     5
+0.50 bottleneck_aware_lambda0              30             0  12,483.40 3,227.04       48.70             0.90             2.59                 3.59     5
+0.50                    exact              30             0  12,042.53 3,012.84       48.37             0.90            11.40                 0.00    30
+0.60        dijkstra_dispatch              30             0  25,260.17 5,867.41      266.43             0.47             0.06                52.00     0
+0.60            min_cost_flow              30             0  24,970.73 5,863.63      266.10             0.47             0.11                50.18     0
+0.60                   greedy              30             0  17,240.80 3,873.35      122.63             0.76             3.49                 3.65     5
+0.60         bottleneck_aware              30             0  17,249.13 3,865.06      122.63             0.76             3.30                 3.72     5
+0.60 bottleneck_aware_lambda0              30             0  17,241.60 3,872.30      122.63             0.76             3.30                 3.66     5
+0.60                    exact              30             0  16,683.27 3,905.93      121.37             0.76            20.09                 0.00    30
+0.80        dijkstra_dispatch              30             0  35,478.73 5,870.85      398.23             0.27             0.05                39.98     0
+0.80            min_cost_flow              30             0  35,306.97 5,942.25      397.80             0.27             0.08                39.21     0
+0.80                   greedy              30             0  26,074.77 4,450.09      253.10             0.53             3.03                 2.62     7
+0.80         bottleneck_aware              30             0  26,076.10 4,449.77      253.10             0.53             2.99                 2.63     6
+0.80 bottleneck_aware_lambda0              30             0  26,074.77 4,450.09      253.10             0.53             2.80                 2.62     7
+0.80                    exact              30             0  25,457.00 4,509.40      253.10             0.53            36.72                 0.00    30
+1.00        dijkstra_dispatch              30             0  47,457.03 5,921.76      537.07             0.08             0.03                30.21     0
+1.00            min_cost_flow              30             0  47,426.30 5,918.52      537.07             0.08             0.05                30.13     0
+1.00                   greedy              30             0  36,709.70 4,970.83      395.47             0.32             2.22                 0.48    15
+1.00         bottleneck_aware              30             0  36,709.70 4,970.83      395.47             0.32             2.10                 0.48    15
+1.00 bottleneck_aware_lambda0              30             0  36,709.70 4,970.83      395.47             0.32             2.12                 0.48    15
+1.00                    exact              20            10  36,615.65 5,308.18      398.85             0.32            45.51                 0.00    20
+
+  greedy vs re-routing only: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=0.1    n=30       -572.3 +/-    390.1   11/0/19   differs
+    x=0.2    n=30       -781.5 +/-    473.8   13/0/17   differs
+    x=0.3    n=30      -1934.3 +/-    854.7   17/0/13   differs
+    x=0.4    n=30      -2828.0 +/-    986.5   24/0/6   differs
+    x=0.5    n=30      -5283.0 +/-   1143.7   27/0/3   differs
+    x=0.6    n=30      -7729.9 +/-   1014.4   30/0/0   differs
+    x=0.8    n=30      -9232.2 +/-    855.6   30/0/0   differs
+    x=1      n=30     -10716.6 +/-    739.6   30/0/0   differs
+
+  bottleneck-aware (lambda=1) vs greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=0.1    n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=0.2    n=30        +22.2 +/-     33.2   0/2/28   no clear difference
+    x=0.3    n=30         +4.6 +/-     34.1   1/3/26   no clear difference
+    x=0.4    n=30         -3.1 +/-      6.1   2/0/28   no clear difference
+    x=0.5    n=30        +20.7 +/-     37.3   0/2/28   no clear difference
+    x=0.6    n=30         +8.3 +/-     14.7   0/2/28   no clear difference
+    x=0.8    n=30         +1.3 +/-      2.7   0/1/29   no clear difference
+    x=1      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  bottleneck-aware (lambda=1) vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=0.1    n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=0.2    n=30        +22.2 +/-     33.2   0/2/28   no clear difference
+    x=0.3    n=30         +4.6 +/-     34.1   1/3/26   no clear difference
+    x=0.4    n=30         -3.1 +/-      6.1   2/0/28   no clear difference
+    x=0.5    n=30        +20.7 +/-     37.3   0/2/28   no clear difference
+    x=0.6    n=30         +7.5 +/-     13.0   0/2/28   no clear difference
+    x=0.8    n=30         +1.3 +/-      2.7   0/1/29   no clear difference
+    x=1      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  greedy vs exact (only runs where exact was feasible): mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +3.9 +/-      5.4   0/4/26   no clear difference
+    x=0.1    n=30        +67.1 +/-     46.1   0/10/20   differs
+    x=0.2    n=30        +81.5 +/-     49.2   0/13/17   differs
+    x=0.3    n=30       +197.2 +/-    106.5   0/21/9   differs
+    x=0.4    n=30       +205.7 +/-     73.5   0/24/6   differs
+    x=0.5    n=30       +440.9 +/-    196.8   0/25/5   differs
+    x=0.6    n=30       +557.5 +/-    235.0   0/25/5   differs
+    x=0.8    n=30       +617.8 +/-    299.6   0/23/7   differs
+    x=1      n=20       +245.4 +/-    140.4   0/15/5   differs
+
+  dispatch vs min-cost flow: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30       +258.0 +/-    122.0   0/30/0   differs
+    x=0.1    n=30       +332.2 +/-    179.3   0/30/0   differs
+    x=0.2    n=30       +389.7 +/-    187.2   0/30/0   differs
+    x=0.3    n=30       +610.2 +/-    328.5   0/30/0   differs
+    x=0.4    n=30       +671.0 +/-    344.3   0/30/0   differs
+    x=0.5    n=30       +468.3 +/-    186.1   0/30/0   differs
+    x=0.6    n=30       +289.4 +/-    110.5   0/30/0   differs
+    x=0.8    n=30       +171.8 +/-     96.5   0/29/1   differs
+    x=1      n=30        +30.7 +/-     20.2   0/14/16   differs
+
+===== Experiment C =====
+   x                    label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+1.00        dijkstra_dispatch              30             0   6,738.73 1,478.32        7.57             0.98             0.10                 8.43     0
+1.00            min_cost_flow              30             0   6,321.17 1,140.95        3.40             0.99             0.20                 2.08    20
+1.00                   greedy              30             0   6,193.43   971.00        0.00             1.00             0.90                 0.27    24
+1.00         bottleneck_aware              30             0   6,193.43   971.00        0.00             1.00             0.79                 0.27    24
+1.00 bottleneck_aware_lambda0              30             0   6,193.43   971.00        0.00             1.00             0.86                 0.27    24
+1.00                    exact              30             0   6,176.17   962.78        0.00             1.00             1.28                 0.00    30
+2.00        dijkstra_dispatch              30             0   8,153.40 2,551.13       32.53             0.92             0.08                22.82     0
+2.00            min_cost_flow              30             0   7,653.20 2,411.43       28.00             0.93             0.18                15.44    11
+2.00                   greedy              30             0   6,617.03 1,139.64        0.00             1.00             1.11                 1.45    18
+2.00         bottleneck_aware              30             0   6,590.97 1,135.78        0.00             1.00             0.98                 1.05    19
+2.00 bottleneck_aware_lambda0              30             0   6,617.03 1,139.64        0.00             1.00             0.97                 1.45    18
+2.00                    exact              30             0   6,515.77 1,076.88        0.30             1.00             1.12                 0.00    30
+3.00        dijkstra_dispatch              30             0  11,641.57 3,684.30       91.43             0.77             0.07                50.23     0
+3.00            min_cost_flow              30             0  11,198.57 3,745.22       88.30             0.78             0.15                44.24     3
+3.00                   greedy              30             0   7,629.27 1,397.93        6.33             0.98             1.38                 0.43    21
+3.00         bottleneck_aware              30             0   7,637.87 1,385.12        6.33             0.98             1.22                 0.58    22
+3.00 bottleneck_aware_lambda0              30             0   7,629.27 1,397.93        6.33             0.98             1.09                 0.43    21
+3.00                    exact              30             0   7,599.33 1,406.58        6.33             0.98             1.04                 0.00    30
+4.00        dijkstra_dispatch              30             0  16,979.47 3,665.61      178.10             0.54             0.06                72.29     0
+4.00            min_cost_flow              30             0  16,787.40 3,684.18      178.10             0.54             0.13                70.15     0
+4.00                   greedy              30             0   9,918.83 2,254.30       45.17             0.89             1.30                 0.00    30
+4.00         bottleneck_aware              30             0   9,920.07 2,251.77       45.20             0.89             1.14                 0.02    29
+4.00 bottleneck_aware_lambda0              30             0   9,918.83 2,254.30       45.17             0.89             1.09                 0.00    30
+4.00                    exact              30             0   9,918.83 2,254.30       45.17             0.89             0.86                 0.00    30
+5.00        dijkstra_dispatch              30             0  23,186.77 3,231.56      263.33             0.32             0.03                63.12     0
+5.00            min_cost_flow              30             0  23,086.33 3,248.36      263.33             0.32             0.07                62.38     0
+5.00                   greedy              30             0  14,308.77 2,346.76      123.13             0.68             0.79                 0.00    30
+5.00         bottleneck_aware              30             0  14,308.77 2,346.76      123.13             0.68             0.69                 0.00    30
+5.00 bottleneck_aware_lambda0              30             0  14,308.77 2,346.76      123.13             0.68             0.65                 0.00    30
+5.00                    exact              30             0  14,308.77 2,346.76      123.13             0.68             0.51                 0.00    30
+
+  greedy vs re-routing only: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=1      n=30       -127.7 +/-    128.9   5/0/25   no clear difference
+    x=2      n=30      -1036.2 +/-    576.4   15/0/15   differs
+    x=3      n=30      -3569.3 +/-    955.1   26/0/4   differs
+    x=4      n=30      -6868.6 +/-    681.0   30/0/0   differs
+    x=5      n=30      -8777.6 +/-    593.7   30/0/0   differs
+
+  bottleneck-aware (lambda=1) vs greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=1      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=2      n=30        -26.1 +/-     33.1   3/0/27   no clear difference
+    x=3      n=30         +8.6 +/-     33.0   4/3/23   no clear difference
+    x=4      n=30         +1.2 +/-      2.5   0/1/29   no clear difference
+    x=5      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  bottleneck-aware (lambda=1) vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=1      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=2      n=30        -26.1 +/-     33.1   3/0/27   no clear difference
+    x=3      n=30         +8.6 +/-     33.0   4/3/23   no clear difference
+    x=4      n=30         +1.2 +/-      2.5   0/1/29   no clear difference
+    x=5      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  greedy vs exact (only runs where exact was feasible): mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=1      n=30        +17.3 +/-     18.7   0/6/24   no clear difference
+    x=2      n=30       +101.3 +/-     61.6   0/12/18   differs
+    x=3      n=30        +29.9 +/-     23.9   0/9/21   differs
+    x=4      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=5      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  dispatch vs min-cost flow: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=1      n=30       +417.6 +/-    193.5   0/30/0   differs
+    x=2      n=30       +500.2 +/-    257.9   0/30/0   differs
+    x=3      n=30       +443.0 +/-    272.4   0/30/0   differs
+    x=4      n=30       +192.1 +/-     55.0   0/30/0   differs
+    x=5      n=30       +100.4 +/-     25.6   0/28/2   differs
+
+===== Experiment D =====
+     x                    label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+  0.00        dijkstra_dispatch              30             0   6,155.10   980.71        1.03             1.00             0.09                 4.37     0
+  0.00            min_cost_flow              30             0   5,897.10   863.47        0.00             1.00             0.19                 0.06    26
+  0.00                   greedy              30             0   5,897.10   863.47        0.00             1.00             0.78                 0.06    26
+  0.00         bottleneck_aware              30             0   5,897.10   863.47        0.00             1.00             0.62                 0.06    26
+  0.00 bottleneck_aware_lambda0              30             0   5,897.10   863.47        0.00             1.00             0.59                 0.06    26
+  0.00                    exact              30             0   5,893.20   859.18        0.00             1.00             1.01                 0.00    30
+ 20.00        dijkstra_dispatch              30             0   6,503.47 1,118.76        4.00             0.99             0.08                 4.40     0
+ 20.00            min_cost_flow              30             0   6,219.50   886.82        2.17             0.99             0.16                 0.05    26
+ 20.00                   greedy              30             0   6,219.50   886.82        2.17             0.99             0.66                 0.05    26
+ 20.00         bottleneck_aware              30             0   6,219.50   886.82        2.17             0.99             0.57                 0.05    26
+ 20.00 bottleneck_aware_lambda0              30             0   6,219.50   886.82        2.17             0.99             0.55                 0.05    26
+ 20.00                    exact              30             0   6,216.00   882.38        2.17             0.99             0.96                 0.00    30
+ 40.00        dijkstra_dispatch              30             0   7,157.73 1,510.46       11.73             0.97             0.08                 5.45     0
+ 40.00            min_cost_flow              30             0   6,764.63 1,141.38        6.80             0.98             0.17                 0.07    27
+ 40.00                   greedy              30             0   6,764.63 1,141.38        6.80             0.98             0.69                 0.07    27
+ 40.00         bottleneck_aware              30             0   6,764.63 1,141.38        6.80             0.98             0.56                 0.07    27
+ 40.00 bottleneck_aware_lambda0              30             0   6,764.63 1,141.38        6.80             0.98             0.53                 0.07    27
+ 40.00                    exact              30             0   6,759.00 1,131.66        6.80             0.98             0.97                 0.00    30
+ 60.00        dijkstra_dispatch              30             0   8,203.73 2,027.32       24.93             0.94             0.11                 7.77     0
+ 60.00            min_cost_flow              30             0   7,584.83 1,524.29       14.33             0.96             0.21                 0.08    26
+ 60.00                   greedy              30             0   7,584.83 1,524.29       14.33             0.96             0.95                 0.08    26
+ 60.00         bottleneck_aware              30             0   7,584.83 1,524.29       14.33             0.96             0.81                 0.08    26
+ 60.00 bottleneck_aware_lambda0              30             0   7,584.83 1,524.29       14.33             0.96             0.70                 0.08    26
+ 60.00                    exact              30             0   7,576.73 1,511.44       14.33             0.96             1.27                 0.00    30
+ 80.00        dijkstra_dispatch              30             0   9,420.73 2,690.93       39.20             0.90             0.10                 8.15     0
+ 80.00            min_cost_flow              30             0   8,712.33 2,188.21       25.73             0.93             0.20                 0.35    24
+ 80.00                   greedy              30             0   8,682.10 2,150.79       25.07             0.94             0.88                 0.08    26
+ 80.00         bottleneck_aware              30             0   8,688.53 2,157.05       25.07             0.94             0.77                 0.14    25
+ 80.00 bottleneck_aware_lambda0              30             0   8,682.10 2,150.79       25.07             0.94             0.67                 0.08    26
+ 80.00                    exact              30             0   8,674.50 2,146.07       25.07             0.94             1.19                 0.00    30
+100.00        dijkstra_dispatch              30             0  11,139.00 3,238.15       59.77             0.85             0.06                71.62     0
+100.00            min_cost_flow              30             0  10,360.67 2,995.72       44.20             0.89             0.14                60.18     1
+100.00                   greedy              30             0   7,332.77   882.88        0.00             1.00             3.17                14.60     7
+100.00         bottleneck_aware              30             0   7,330.87   889.55        0.00             1.00             3.63                14.57     9
+100.00 bottleneck_aware_lambda0              30             0   7,332.77   882.88        0.00             1.00             3.31                14.60     7
+100.00                    exact              18            12   5,749.06   948.77        0.00             1.00            88.65                 0.00    18
+
+  greedy vs re-routing only: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=20     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=40     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=60     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=80     n=30        -30.2 +/-     45.3   2/0/28   no clear difference
+    x=100    n=30      -3027.9 +/-   1023.1   22/0/8   differs
+
+  bottleneck-aware (lambda=1) vs greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=20     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=40     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=60     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=80     n=30         +6.4 +/-     13.2   0/1/29   no clear difference
+    x=100    n=30         -1.9 +/-    142.4   7/4/19   no clear difference
+
+  bottleneck-aware (lambda=1) vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=20     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=40     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=60     n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=80     n=30         +6.4 +/-     13.2   0/1/29   no clear difference
+    x=100    n=30         -1.9 +/-    142.4   7/4/19   no clear difference
+
+  greedy vs exact (only runs where exact was feasible): mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +3.9 +/-      5.4   0/4/26   no clear difference
+    x=20     n=30         +3.5 +/-      5.2   0/4/26   no clear difference
+    x=40     n=30         +5.6 +/-      9.5   0/3/27   no clear difference
+    x=60     n=30         +8.1 +/-     11.7   0/4/26   no clear difference
+    x=80     n=30         +7.6 +/-      8.6   0/4/26   no clear difference
+    x=100    n=18      +1304.9 +/-    135.1   0/18/0   differs
+
+  dispatch vs min-cost flow: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30       +258.0 +/-    122.0   0/30/0   differs
+    x=20     n=30       +284.0 +/-    171.0   0/30/0   differs
+    x=40     n=30       +393.1 +/-    235.5   0/30/0   differs
+    x=60     n=30       +618.9 +/-    348.3   0/30/0   differs
+    x=80     n=30       +708.4 +/-    400.2   0/30/0   differs
+    x=100    n=30       +778.3 +/-    347.1   0/30/0   differs
+
+===== Experiment E =====
+     x                    label  runs_completed  runs_skipped  cost_mean   cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+  0.00        dijkstra_dispatch              30             0   6,155.10    980.71        1.03             1.00             0.07                 4.37     0
+  0.00            min_cost_flow              30             0   5,897.10    863.47        0.00             1.00             0.17                 0.06    26
+  0.00                   greedy              30             0   5,897.10    863.47        0.00             1.00             0.66                 0.06    26
+  0.00         bottleneck_aware              30             0   5,897.10    863.47        0.00             1.00             0.61                 0.06    26
+  0.00 bottleneck_aware_lambda0              30             0   5,897.10    863.47        0.00             1.00             0.54                 0.06    26
+  0.00                    exact              30             0   5,893.20    859.18        0.00             1.00             0.95                 0.00    30
+ 25.00        dijkstra_dispatch              30             0   9,372.80  1,883.35       20.40             0.96             0.08                 7.93     0
+ 25.00            min_cost_flow              30             0   8,811.93  1,296.61       13.27             0.97             0.18                 1.90    21
+ 25.00                   greedy              30             0   8,649.93  1,113.62        9.03             0.98             0.80                 0.18    25
+ 25.00         bottleneck_aware              30             0   8,656.53  1,119.35        9.03             0.98             0.65                 0.25    24
+ 25.00 bottleneck_aware_lambda0              30             0   8,649.93  1,113.62        9.03             0.98             0.64                 0.18    25
+ 25.00                    exact              30             0   8,634.07  1,110.63        9.03             0.98             1.04                 0.00    30
+ 50.00        dijkstra_dispatch              30             0  13,788.00  3,059.51       61.63             0.90             0.09                13.06     0
+ 50.00            min_cost_flow              30             0  13,188.20  2,691.45       55.73             0.91             0.20                 8.36    14
+ 50.00                   greedy              30             0  12,153.00  1,613.87       25.53             0.96             1.17                 0.43    20
+ 50.00         bottleneck_aware              30             0  12,158.57  1,623.97       25.53             0.96             1.09                 0.47    19
+ 50.00 bottleneck_aware_lambda0              30             0  12,153.00  1,613.87       25.53             0.96             1.06                 0.43    20
+ 50.00                    exact              30             0  12,100.70  1,607.19       25.60             0.96             1.20                 0.00    30
+100.00        dijkstra_dispatch              30             0  25,469.07  6,285.73      190.13             0.76             0.09                15.86     0
+100.00            min_cost_flow              30             0  24,703.80  6,159.10      182.53             0.77             0.25                12.31     3
+100.00                   greedy              30             0  21,814.37  4,053.31      109.03             0.86             1.61                 0.17    21
+100.00         bottleneck_aware              30             0  21,805.63  4,053.39      109.03             0.86             1.45                 0.12    22
+100.00 bottleneck_aware_lambda0              30             0  21,814.37  4,053.31      109.03             0.86             1.37                 0.17    21
+100.00                    exact              30             0  21,777.70  4,043.45      109.10             0.86             1.32                 0.00    30
+150.00        dijkstra_dispatch              30             0  40,534.10  8,734.55      370.10             0.62             0.10                16.59     0
+150.00            min_cost_flow              30             0  39,687.57  8,714.00      360.17             0.63             0.21                13.99     1
+150.00                   greedy              30             0  34,810.37  7,329.46      246.17             0.75             1.92                 0.05    27
+150.00         bottleneck_aware              30             0  34,801.27  7,315.70      246.17             0.75             1.88                 0.03    27
+150.00 bottleneck_aware_lambda0              30             0  34,810.37  7,329.46      246.17             0.75             1.78                 0.05    27
+150.00                    exact              30             0  34,791.80  7,316.22      246.17             0.75             1.49                 0.00    30
+200.00        dijkstra_dispatch              30             0  56,428.70 10,702.29      556.73             0.52             0.09                13.86     0
+200.00            min_cost_flow              30             0  55,479.90 10,717.15      544.60             0.54             0.20                11.86     0
+200.00                   greedy              30             0  49,601.60  9,470.43      417.20             0.64             1.92                 0.00    29
+200.00         bottleneck_aware              30             0  49,601.60  9,470.43      417.20             0.64             1.74                 0.00    29
+200.00 bottleneck_aware_lambda0              30             0  49,601.60  9,470.43      417.20             0.64             1.68                 0.00    29
+200.00                    exact              30             0  49,601.33  9,470.93      417.20             0.64             1.33                 0.00    30
+
+  greedy vs re-routing only: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=25     n=30       -162.0 +/-    143.3   5/0/25   differs
+    x=50     n=30      -1035.2 +/-    568.6   12/0/18   differs
+    x=100    n=30      -2889.4 +/-    972.9   22/0/8   differs
+    x=150    n=30      -4877.2 +/-    874.9   28/0/2   differs
+    x=200    n=30      -5878.3 +/-    788.1   29/0/1   differs
+
+  bottleneck-aware (lambda=1) vs greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=25     n=30         +6.6 +/-     13.5   0/1/29   no clear difference
+    x=50     n=30         +5.6 +/-     15.5   1/1/28   no clear difference
+    x=100    n=30         -8.7 +/-     12.5   2/0/28   no clear difference
+    x=150    n=30         -9.1 +/-     29.2   1/1/28   no clear difference
+    x=200    n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  bottleneck-aware (lambda=1) vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+    x=25     n=30         +6.6 +/-     13.5   0/1/29   no clear difference
+    x=50     n=30         +5.6 +/-     15.5   1/1/28   no clear difference
+    x=100    n=30         -8.7 +/-     12.5   2/0/28   no clear difference
+    x=150    n=30         -9.1 +/-     29.2   1/1/28   no clear difference
+    x=200    n=30         +0.0 +/-      0.0   0/0/30   no clear difference
+
+  greedy vs exact (only runs where exact was feasible): mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30         +3.9 +/-      5.4   0/4/26   no clear difference
+    x=25     n=30        +15.9 +/-     17.4   0/5/25   no clear difference
+    x=50     n=30        +52.3 +/-     38.5   0/10/20   differs
+    x=100    n=30        +36.7 +/-     29.9   0/9/21   differs
+    x=150    n=30        +18.6 +/-     28.7   0/3/27   no clear difference
+    x=200    n=30         +0.3 +/-      0.5   0/1/29   no clear difference
+
+  dispatch vs min-cost flow: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0      n=30       +258.0 +/-    122.0   0/30/0   differs
+    x=25     n=30       +560.9 +/-    327.1   0/30/0   differs
+    x=50     n=30       +599.8 +/-    233.9   0/30/0   differs
+    x=100    n=30       +765.3 +/-    245.7   0/30/0   differs
+    x=150    n=30       +846.5 +/-    339.0   0/30/0   differs
+    x=200    n=30       +948.8 +/-    423.4   0/30/0   differs
+
+===== Experiment F =====
+   x                         label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+0.50                 min_cost_flow             100             0  18,550.78 5,772.17      163.02             0.68             0.13                43.88     8
+0.50                        greedy             100             0  12,881.27 3,250.80       45.35             0.91             2.85                 0.58    89
+0.50    bottleneck_aware(lambda=0)             100             0  12,881.27 3,250.80       45.35             0.91             2.95                 0.58    89
+0.50 bottleneck_aware(lambda=0.25)             100             0  12,897.29 3,291.63       45.35             0.91             2.91                 0.66    89
+0.50  bottleneck_aware(lambda=0.5)             100             0  12,893.28 3,295.33       45.35             0.91             2.89                 0.62    90
+0.50    bottleneck_aware(lambda=1)             100             0  12,867.54 3,287.94       44.84             0.91             2.93                 0.41    90
+0.50    bottleneck_aware(lambda=2)             100             0  12,858.56 3,299.95       44.84             0.91             2.81                 0.31    93
+0.50    bottleneck_aware(lambda=5)             100             0  12,865.64 3,290.08       44.74             0.91             2.83                 0.40    90
+
+  lambda=0.25 vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100       +16.0 +/-     38.1   2/2/96   no clear difference
+
+  lambda=0.5 vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100       +12.0 +/-     39.3   5/3/92   no clear difference
+
+  lambda=1 vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100       -13.7 +/-     72.1   7/5/88   no clear difference
+
+  lambda=2 vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100       -22.7 +/-     74.9   10/6/84   no clear difference
+
+  lambda=5 vs lambda=0: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100       -15.6 +/-     78.4   10/10/80   no clear difference
+
+  lambda=0 vs plain greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.5    n=100        +0.0 +/-      0.0   0/0/100   no clear difference
+
+  runs in which a lambda>0 variant chose a plan of EXACTLY the lambda=0 cost: 440/500 (88%)
+
+===== Experiment G =====
+   x                    label  runs_completed  runs_skipped  cost_mean  cost_sd  unmet_mean  fulfilment_mean  runtime_ms_mean  regret_percent_mean  wins
+0.40        dijkstra_dispatch             200             0  13,354.59 3,746.19       82.42             0.83             0.07                35.10     0
+0.40            min_cost_flow             200             0  12,757.94 3,678.41       75.39             0.84             0.15                28.87     7
+0.40                   greedy             200             0  10,082.96 2,075.68       17.59             0.96             2.25                 2.27    43
+0.40         bottleneck_aware             200             0  10,093.33 2,078.51       17.60             0.96             2.12                 2.38    42
+0.40 bottleneck_aware_lambda0             200             0  10,082.96 2,075.68       17.59             0.96             2.27                 2.27    43
+0.40                    exact             200             0   9,861.09 2,020.56       17.07             0.96             7.82                 0.00   200
+
+  bottleneck-aware vs greedy: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.4    n=200       +10.4 +/-     16.9   11/15/174   no clear difference
+
+  greedy vs re-routing only: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.4    n=200     -2675.0 +/-    350.2   150/0/50   differs
+
+  greedy vs exact: mean cost(a) - cost(b), 95% interval, runs where a cheaper / dearer / equal
+    x=0.4    n=200      +221.9 +/-     37.4   0/157/43   differs
+
+===== Check: exact beating greedy with NO disruption (B, x=0) =====
+  runs where exact is cheaper: 4; of those, greedy took 0 actions and exact took [1.0, 1.0, 1.0, 1.0] actions; unmet demand greedy=[0.0, 0.0, 0.0, 0.0]
