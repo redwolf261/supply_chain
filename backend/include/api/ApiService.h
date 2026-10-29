@@ -15,6 +15,8 @@
 //   POST /algorithms/compare     {strategies?: [...]}  same scenario, same objective
 //   POST /experiments/run        seeded batch of scenarios, every strategy on identical inputs (see ExperimentRunner.h)
 //   POST /multiday/run           5-30 day simulation: every chosen policy on the same scenario, day-by-day timelines
+//   GET  /graph/spectral         spectral Laplacian eigenvalues, algebraic connectivity, Fiedler partition
+//   POST /graph/spectral/compare compare spectral connectivity between initial and disrupted states
 //   GET  /results[?format=csv]   rows of every run/compare so far
 //
 // The service owns one live Simulation (a single-user local tool) and serialises all requests
@@ -63,6 +65,8 @@ private:
     Json handleCompare(const Json& body);
     Json handleExperiment(const Json& body);
     Json handleMultiDay(const Json& body);
+    Json handleSpectral();
+    Json handleSpectralCompare();
     ApiResponse handleResults(const std::map<std::string, std::string>& query);
 
     Simulation& requireSimulation();

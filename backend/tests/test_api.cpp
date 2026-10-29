@@ -218,6 +218,24 @@ void testDisruptionEndpoint() {
     SCX_CHECK_EQ(get(s, "/api/network").body.dump(), before);                              // rejected events change nothing
 }
 
+void testSpectralEndpoints() {
+    ApiService s(SCX_DATA_DIR);
+    SCX_CHECK_EQ(get(s, "/api/graph/spectral").status, 409); // no scenario loaded
+    post(s, "/api/scenario/load", {{"file", "small_demo"}});
+    Reply spec = get(s, "/api/graph/spectral");
+    SCX_CHECK_EQ(spec.status, 200);
+    SCX_CHECK_EQ(spec.body["connectedComponents"].get<int>(), 1);
+    SCX_CHECK(spec.body["algebraicConnectivity"].is_number());
+    SCX_CHECK(spec.body["algebraicConnectivity"].get<double>() > 0.0);
+    SCX_CHECK(spec.body["eigenvalues"].size() >= 8);
+
+    Reply cmp = post(s, "/api/graph/spectral/compare", json::object());
+    SCX_CHECK_EQ(cmp.status, 200);
+    SCX_CHECK(cmp.body.contains("initial"));
+    SCX_CHECK(cmp.body.contains("current"));
+    SCX_CHECK(cmp.body.contains("algebraicConnectivityDelta"));
+}
+
 void testAnalysisAlgorithms() {
     ApiService s(SCX_DATA_DIR);
     post(s, "/api/scenario/load", {{"file", "small_demo"}});
@@ -572,6 +590,7 @@ int main() {
     SCX_RUN(testRoutingErrors);
     SCX_RUN(testLoadingAndRejectingBadScenarios);
     SCX_RUN(testDisruptionEndpoint);
+    SCX_RUN(testSpectralEndpoints);
     SCX_RUN(testAnalysisAlgorithms);
     SCX_RUN(testAlgorithmRunValidation);
     SCX_RUN(testRecoveryRunExecuteAndTwoKindsOfReset);

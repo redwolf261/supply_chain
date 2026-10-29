@@ -38,3 +38,7 @@ data/generated/*
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# ML artifacts and large generated training sets
+data/ml_demand_dataset.json
+ml/artifacts/

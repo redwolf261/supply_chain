@@ -15,6 +15,7 @@
 #include "multiday/MultiDayJson.h"
 #include "simulation/NetworkGenerator.h"
 #include "util/AllocationTracker.h"
+#include "advanced/spectral/SpectralAnalysis.h"
 
 namespace scx {
 
@@ -228,6 +229,8 @@ ApiResponse ApiService::handle(const ApiRequest& request) {
             {"POST", "/api/algorithms/compare", [&] { return jsonResponse(200, handleCompare(parseBody())); }},
             {"POST", "/api/experiments/run", [&] { return jsonResponse(200, handleExperiment(parseBody())); }},
             {"POST", "/api/multiday/run", [&] { return jsonResponse(200, handleMultiDay(parseBody())); }},
+            {"GET", "/api/graph/spectral", [&] { return jsonResponse(200, handleSpectral()); }},
+            {"POST", "/api/graph/spectral/compare", [&] { return jsonResponse(200, handleSpectralCompare()); }},
             {"GET", "/api/results", [&] { return handleResults(request.query); }},
         };
         bool pathKnown = false;
@@ -613,6 +616,28 @@ Json ApiService::handleMultiDay(const Json& body) {
                         {"maxLookaheadDays", kMaxMultiDayLookahead}, {"maxExhaustiveCandidates", kMaxMultiDayExhaustive}}},
             {"note", "Every policy runs on the same scenario: same initial state, disruption schedule, demand, costs and forecast. "
                      "Recovery days are reported only when the recovery definition is met inside the horizon."}};
+}
+
+Json ApiService::handleSpectral() {
+    Simulation& sim = requireSimulation();
+    const SpectralResult spec = computeSpectralAnalysis(sim.current());
+    return spectralResultToJson(spec);
+}
+
+Json ApiService::handleSpectralCompare() {
+    Simulation& sim = requireSimulation();
+    const SpectralResult initialSpec = computeSpectralAnalysis(sim.initial());
+    const SpectralResult currentSpec = computeSpectralAnalysis(sim.current());
+    Json j;
+    j["initial"] = spectralResultToJson(initialSpec);
+    j["current"] = spectralResultToJson(currentSpec);
+    if (initialSpec.algebraicConnectivity.has_value() && currentSpec.algebraicConnectivity.has_value()) {
+        j["algebraicConnectivityDelta"] = *currentSpec.algebraicConnectivity - *initialSpec.algebraicConnectivity;
+    } else {
+        j["algebraicConnectivityDelta"] = nullptr;
+    }
+    j["componentsDelta"] = currentSpec.connectedComponents - initialSpec.connectedComponents;
+    return j;
 }
 
 ApiResponse ApiService::handleResults(const std::map<std::string, std::string>& query) {

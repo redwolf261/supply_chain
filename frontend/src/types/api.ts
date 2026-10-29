@@ -347,3 +347,23 @@ export interface MultiDayResponse {
   limits: { minHorizon: number; maxHorizon: number; maxNodes: number; maxLookaheadDays: number; maxExhaustiveCandidates: number };
   note: string;
 }
+
+
+export interface SpectralResultDto {
+  activeNodeCount: number;
+  connectedComponents: number;
+  algebraicConnectivity: number | null;
+  eigenvalues: number[];
+  fiedlerVector: number[];
+  activeNodeIds: number[];
+  partitionPositive: number[];
+  partitionNegative: number[];
+  crossingEdgeIds: number[];
+}
+
+export interface SpectralCompareDto {
+  initial: SpectralResultDto;
+  current: SpectralResultDto;
+  algebraicConnectivityDelta: number | null;
+  componentsDelta: number;
+}

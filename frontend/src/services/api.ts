@@ -1,5 +1,6 @@
 import type {
   AlgorithmInfo, CompareResponse, ExperimentResponse, LoadRequest, MultiDayResponse, ResultRow, RunResponse, ScenarioList, Snapshot,
+  SpectralResultDto, SpectralCompareDto,
 } from '../types/api';
 
 /** Error from the server (status > 0) or from failing to reach it at all (status 0). */
@@ -52,6 +53,8 @@ export function createApi(fetchFn: FetchFn = (i, init) => fetch(i, init), base =
     compare: (body: Record<string, unknown>) => request<CompareResponse>('POST', '/api/algorithms/compare', body),
     runExperiment: (body: Record<string, unknown>) => request<ExperimentResponse>('POST', '/api/experiments/run', body),
     runMultiDay: (body: Record<string, unknown>) => request<MultiDayResponse>('POST', '/api/multiday/run', body),
+    spectral: () => request<SpectralResultDto>('GET', '/api/graph/spectral'),
+    spectralCompare: () => request<SpectralCompareDto>('POST', '/api/graph/spectral/compare'),
     results: async () => (await request<{ results: ResultRow[] }>('GET', '/api/results')).results,
     resultsCsvUrl: () => `${base}/api/results?format=csv`,
   };

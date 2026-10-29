@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { EmptyState, PageHead } from '../components/Common';
 import { BOTTLENECK_UTILISATION, NetworkGraph, type Selection } from '../components/NetworkGraph';
 import { useApp, NO_HIGHLIGHT } from '../hooks/useApp';
-import type { EdgeDto, NodeDto } from '../types/api';
+import type { EdgeDto, NodeDto, SpectralResultDto } from '../types/api';
 import { money, percent, titleCase } from '../utils/format';
 
 function NodeDetails({ node }: { node: NodeDto }) {
@@ -35,10 +35,43 @@ function EdgeDetails({ edge }: { edge: EdgeDto }) {
   );
 }
 
+function SpectralCard({ spectral, onHighlightCut }: { spectral: SpectralResultDto | null; onHighlightCut: () => void }) {
+  if (!spectral) return null;
+  return (
+    <div className="card">
+      <h2>Spectral Graph Connectivity</h2>
+      <dl className="detail-list">
+        <dt>Algebraic Connectivity (λ₂)</dt>
+        <dd><strong>{spectral.algebraicConnectivity !== null ? spectral.algebraicConnectivity.toFixed(4) : 'N/A'}</strong></dd>
+        <dt>Connected Components</dt>
+        <dd>{spectral.connectedComponents}</dd>
+        <dt>Fiedler Partition</dt>
+        <dd>{spectral.partitionPositive.length} positive / {spectral.partitionNegative.length} negative</dd>
+        <dt>Crossing Cut Routes</dt>
+        <dd>{spectral.crossingEdgeIds.length}</dd>
+      </dl>
+      {spectral.crossingEdgeIds.length > 0 && (
+        <button className="btn small" style={{ marginTop: 8 }} onClick={onHighlightCut}>
+          Highlight Fiedler Cut Routes ({spectral.crossingEdgeIds.length})
+        </button>
+      )}
+    </div>
+  );
+}
+
 export function NetworkPage() {
-  const { snapshot, scenarios, load, reset, busy, highlight, setHighlight } = useApp();
+  const { api, snapshot, scenarios, load, reset, busy, highlight, setHighlight } = useApp();
   const [selected, setSelected] = useState<Selection>(null);
   const [quick, setQuick] = useState('supplier_failure');
+  const [spectral, setSpectral] = useState<SpectralResultDto | null>(null);
+
+  useEffect(() => {
+    if (snapshot) {
+      api.spectral().then(setSpectral).catch(() => setSpectral(null));
+    } else {
+      setSpectral(null);
+    }
+  }, [snapshot, api]);
 
   const bottlenecks = useMemo(() => (snapshot?.network.edges ?? [])
     .filter((e) => e.usable && (e.flow ?? 0) > 0 && (e.utilisation ?? 0) >= BOTTLENECK_UTILISATION)
@@ -58,7 +91,7 @@ export function NetworkPage() {
 
   return (
     <>
-      <PageHead title="Supply Network" subtitle="Directed graph of the live scenario. Click a node or route for details; scroll to zoom, drag to pan.">
+      <PageHead title="Supply Network" subtitle="Directed graph of the live scenario with Laplacian spectral connectivity analysis. Click a node or route for details; scroll to zoom, drag to pan.">
         <div className="row">
           <select aria-label="Scenario" value={quick} onChange={(e) => setQuick(e.target.value)} style={{ width: 'auto' }}>
             {(scenarios?.standard ?? []).map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
@@ -79,6 +112,18 @@ export function NetworkPage() {
             {edge && <EdgeDetails edge={edge} />}
             {!selected && <p className="muted">Nothing selected. Click a node or a route label.</p>}
           </div>
+          <SpectralCard
+            spectral={spectral}
+            onHighlightCut={() => {
+              if (!spectral) return;
+              setHighlight({
+                nodeIds: [],
+                edgeIds: spectral.crossingEdgeIds,
+                label: 'Fiedler Cut (Structural Bottleneck)',
+                dimOthers: true,
+              });
+            }}
+          />
           <div className="card">
             <h2>Bottlenecks ({bottlenecks.length})</h2>
             {bottlenecks.length === 0 ? <p className="muted">No route is carrying 90% or more of its capacity.</p> : (
