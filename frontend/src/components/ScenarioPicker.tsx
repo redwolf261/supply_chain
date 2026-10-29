@@ -1,16 +1,11 @@
 import { useState } from 'react';
-import { useApp } from '../hooks/useApp';
+import { useApp, type SharedConfig } from '../hooks/useApp';
 import { titleCase } from '../utils/format';
 import { Field } from './Common';
 
 type Mode = 'standard' | 'file' | 'generate';
 
-const DEFAULTS = {
-  suppliers: 4, backupSuppliers: 2, warehouses: 3, distributionCenters: 3, customers: 6,
-  edges: 0, capacityFactor: 1.2, demandMin: 20, demandMax: 60, seed: 1,
-};
-
-const SCALE_PRESETS = [
+export const SCALE_PRESETS = [
   { label: 'Small (15 nodes)', values: { suppliers: 4, backupSuppliers: 2, warehouses: 3, distributionCenters: 3, customers: 6, edges: 0, capacityFactor: 1.2, demandMin: 20, demandMax: 60 } },
   { label: 'Medium (50 nodes)', values: { suppliers: 10, backupSuppliers: 4, warehouses: 8, distributionCenters: 8, customers: 20, edges: 0, capacityFactor: 1.3, demandMin: 50, demandMax: 200 } },
   { label: 'Large (150 nodes)', values: { suppliers: 25, backupSuppliers: 10, warehouses: 20, distributionCenters: 25, customers: 70, edges: 0, capacityFactor: 1.3, demandMin: 100, demandMax: 500 } },
@@ -18,29 +13,47 @@ const SCALE_PRESETS = [
   { label: 'Stress Test (500 nodes)', values: { suppliers: 80, backupSuppliers: 20, warehouses: 60, distributionCenters: 80, customers: 260, edges: 0, capacityFactor: 1.5, demandMin: 500, demandMax: 5000 } },
 ];
 
-/** Loads a scenario into the server: a standard scenario, a bundled file, or a freshly generated network with broad range controls. */
+/** Loads a scenario into the server: a standard scenario, a bundled file, or a freshly generated network with shared reactive variables. */
 export function ScenarioPicker() {
-  const { scenarios, load, busy, snapshot } = useApp();
+  const { scenarios, load, busy, snapshot, config, updateConfig } = useApp();
   const [mode, setMode] = useState<Mode>('standard');
   const [standard, setStandard] = useState('supplier_failure');
   const [file, setFile] = useState('');
-  const [seed, setSeed] = useState(1);
-  const [gen, setGen] = useState(DEFAULTS);
-  const [severity, setSeverity] = useState(0.3);
 
-  const num = (key: keyof typeof DEFAULTS) => (
-    <input id={`gen-${key}`} type="number" value={gen[key]} step={key === 'capacityFactor' ? 0.1 : 1}
-      onChange={(e) => setGen({ ...gen, [key]: Number(e.target.value) })} />
+  const num = (key: keyof SharedConfig) => (
+    <input
+      id={`gen-${key}`}
+      type="number"
+      value={config[key] ?? 0}
+      step={key === 'capacityFactor' ? 0.1 : 1}
+      onChange={(e) => updateConfig({ [key]: Number(e.target.value) })}
+    />
   );
 
   const applyPreset = (presetValues: typeof SCALE_PRESETS[0]['values']) => {
-    setGen((prev) => ({ ...prev, ...presetValues }));
+    updateConfig(presetValues);
   };
 
   const submit = () => {
-    if (mode === 'standard') void load({ standard, seed });
+    if (mode === 'standard') void load({ standard, seed: config.seed });
     else if (mode === 'file') void load({ file: file || scenarios?.files[0] || '' });
-    else void load({ generate: { ...gen }, disruptionSeverity: severity });
+    else {
+      void load({
+        generate: {
+          suppliers: config.suppliers,
+          backupSuppliers: config.backupSuppliers,
+          warehouses: config.warehouses,
+          distributionCenters: config.distributionCenters,
+          customers: config.customers,
+          edges: config.edges,
+          capacityFactor: config.capacityFactor,
+          demandMin: config.demandMin,
+          demandMax: config.demandMax,
+          seed: config.seed,
+        },
+        disruptionSeverity: config.severity,
+      });
+    }
   };
 
   return (
@@ -64,7 +77,7 @@ export function ScenarioPicker() {
             </select>
           </Field>
           <Field label="Random seed" htmlFor="seed">
-            <input id="seed" type="number" min={0} value={seed} onChange={(e) => setSeed(Number(e.target.value))} />
+            <input id="seed" type="number" min={0} value={config.seed} onChange={(e) => updateConfig({ seed: Number(e.target.value) })} />
           </Field>
         </div>
       )}
@@ -103,8 +116,8 @@ export function ScenarioPicker() {
             <Field label="Max Customer Demand" htmlFor="gen-demandMax">{num('demandMax')}</Field>
             <Field label="Capacity factor" htmlFor="gen-capacityFactor">{num('capacityFactor')}</Field>
             <Field label="Random Seed" htmlFor="gen-seed">{num('seed')}</Field>
-            <Field label={`Disruption severity: ${(severity * 100).toFixed(0)}%`} htmlFor="gen-severity">
-              <input id="gen-severity" type="range" min={0} max={1} step={0.05} value={severity} onChange={(e) => setSeverity(Number(e.target.value))} />
+            <Field label={`Disruption severity: ${(config.severity * 100).toFixed(0)}%`} htmlFor="gen-severity">
+              <input id="gen-severity" type="range" min={0} max={1} step={0.05} value={config.severity} onChange={(e) => updateConfig({ severity: Number(e.target.value) })} />
             </Field>
           </div>
         </>

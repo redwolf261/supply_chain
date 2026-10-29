@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TimelineChart, type TimelineSeries } from '../components/Charts';
 import { Field, PageHead, Tile } from '../components/Common';
 import { NetworkGraph } from '../components/NetworkGraph';
@@ -27,8 +27,18 @@ const LINE: Partial<Record<MultiDayPolicyName, Partial<TimelineSeries>>> = {
 };
 
 export function MultiDayPage() {
-  const { api, busy } = useApp();
-  const [form, setForm] = useState<Form>(DEFAULTS);
+  const { api, busy, config, updateConfig, snapshot } = useApp();
+  const [form, setForm] = useState<Form>({
+    ...DEFAULTS,
+    suppliers: config.suppliers,
+    backupSuppliers: config.backupSuppliers,
+    warehouses: config.warehouses,
+    distributionCenters: config.distributionCenters,
+    customers: config.customers,
+    capacityFactor: config.capacityFactor,
+    seed: config.seed,
+    lambda: config.lambda,
+  });
   const [forecast, setForecast] = useState<'persistence' | 'perfect'>('persistence');
   const [policies, setPolicies] = useState<MultiDayPolicyName[]>(ALL_POLICIES);
   const [working, setWorking] = useState(false);
@@ -36,6 +46,21 @@ export function MultiDayPage() {
   const [result, setResult] = useState<MultiDayResponse | null>(null);
   const [focus, setFocus] = useState<MultiDayPolicyName | null>(null);
   const [day, setDay] = useState(0);
+
+  // Sync with global config whenever config changes in other tabs
+  useEffect(() => {
+    setForm((prev) => ({
+      ...prev,
+      suppliers: config.suppliers,
+      backupSuppliers: config.backupSuppliers,
+      warehouses: config.warehouses,
+      distributionCenters: config.distributionCenters,
+      customers: config.customers,
+      capacityFactor: config.capacityFactor,
+      seed: config.seed,
+      lambda: config.lambda,
+    }));
+  }, [config.suppliers, config.backupSuppliers, config.warehouses, config.distributionCenters, config.customers, config.capacityFactor, config.seed, config.lambda]);
 
   const nodes = form.suppliers + form.backupSuppliers + form.warehouses + form.distributionCenters + form.customers;
   const invalid = form.horizon < 5 || form.horizon > 30 || nodes > 60 || form.lookaheadDays < 1 || form.lookaheadDays > 12 || form.transitMin > form.transitMax || policies.length === 0;
@@ -64,9 +89,16 @@ export function MultiDayPage() {
     }
   };
 
+  const handleFieldChange = (key: keyof Form, val: number) => {
+    setForm((prev) => ({ ...prev, [key]: val }));
+    if (['suppliers', 'backupSuppliers', 'warehouses', 'distributionCenters', 'customers', 'capacityFactor', 'seed', 'lambda'].includes(key)) {
+      updateConfig({ [key]: val });
+    }
+  };
+
   const num = (key: keyof Form, label: string, step = 1, min = 0) => (
     <Field label={label} htmlFor={`md-${key}`}>
-      <input id={`md-${key}`} type="number" step={step} min={min} value={form[key]} onChange={(e) => setForm({ ...form, [key]: Number(e.target.value) })} />
+      <input id={`md-${key}`} type="number" step={step} min={min} value={form[key]} onChange={(e) => handleFieldChange(key, Number(e.target.value))} />
     </Field>
   );
   const toggle = (id: MultiDayPolicyName) => setPolicies(policies.includes(id) ? policies.filter((p) => p !== id) : ALL_POLICIES.filter((p) => p === id || policies.includes(p)));
@@ -89,10 +121,27 @@ export function MultiDayPage() {
   return (
     <>
       <PageHead title="Multi-day Simulator"
-        subtitle="A 5 to 30 day simulation with transit times, stock, backlog and disruptions that start and end. Every policy runs on the same scenario: same opening state, disruption schedule, demand and costs. All numbers and charts come from the C++ engine." />
+        subtitle="A 5 to 30 day simulation with transit times, stock, backlog and disruptions that start and end. Synchronized with the global network configuration. All numbers and charts come from the C++ engine." />
 
       <div className="card">
-        <h2>Scenario</h2>
+        <div className="card-head">
+          <h2>Scenario Parameters (Shared Across Tabs)</h2>
+          {snapshot && (
+            <button className="btn small" type="button" onClick={() => {
+              setForm((prev) => ({
+                ...prev,
+                suppliers: config.suppliers,
+                backupSuppliers: config.backupSuppliers,
+                warehouses: config.warehouses,
+                distributionCenters: config.distributionCenters,
+                customers: config.customers,
+                seed: config.seed,
+              }));
+            }}>
+              Sync with Active Network ({snapshot.scenario.name})
+            </button>
+          )}
+        </div>
         <div className="row">
           {num('horizon', 'Horizon (5–30 days)', 1, 5)}
           {num('seed', 'Random seed')}
@@ -134,7 +183,7 @@ export function MultiDayPage() {
         </div>
         <div className="row" style={{ marginTop: 10 }}>
           {num('lookaheadDays', 'Look-ahead horizon (1–12 days)', 1, 1)}
-          {num('lambda', 'λ for bottleneck-aware', 0.25)}
+          {num('lambda', 'λ for bottleneck-aware (shared across tabs)', 0.25)}
           <Field label="What policies may know" htmlFor="md-forecast">
             <div className="seg" id="md-forecast" role="group" aria-label="Forecast">
               {(['persistence', 'perfect'] as const).map((f) => (
@@ -145,8 +194,20 @@ export function MultiDayPage() {
             </div>
           </Field>
           <button className="btn primary" disabled={busy || working || invalid} onClick={() => void run()}>{working ? 'Simulating…' : 'Run simulation'}</button>
-          <span className={nodes > 60 ? 'pill bad' : 'faint'}>{nodes} nodes (at most 60)</span>
+          <span className={nodes > 60 ? 'pill bad' : 'faint'}>{nodes} nodes (server limit 60 for time-expanded LP)</span>
         </div>
+        {nodes > 60 && (
+          <p className="banner" style={{ marginTop: 6, fontSize: 12 }}>
+            The current global network has {nodes} nodes. The rolling multi-day LP solver accepts up to 60 nodes.
+            <button className="btn small" style={{ marginLeft: 8 }} onClick={() => {
+              handleFieldChange('suppliers', 4);
+              handleFieldChange('backupSuppliers', 2);
+              handleFieldChange('warehouses', 3);
+              handleFieldChange('distributionCenters', 3);
+              handleFieldChange('customers', 6);
+            }}>Set to 18 nodes (Quick Multi-Day)</button>
+          </p>
+        )}
         <p className="faint" style={{ marginTop: 6 }}>
           Persistence: a policy assumes today’s network and demand continue; it does not know when a failure will end. Perfect: it sees the true
           future events and demand inside its planning window (an upper bound on what forecasting could give).

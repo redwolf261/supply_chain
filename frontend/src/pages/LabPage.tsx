@@ -90,11 +90,12 @@ function PlanView({ plan, metrics, executed }: { plan: PlanDto; metrics: Metrics
 }
 
 export function LabPage() {
-  const { snapshot, catalog, run, busy, setHighlight } = useApp();
+  const { snapshot, catalog, run, busy, setHighlight, config, updateConfig } = useApp();
   const [algorithm, setAlgorithm] = useState('bfs');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('');
-  const [lambda, setLambda] = useState(1);
+  const lambda = config.lambda;
+  const setLambda = (val: number) => updateConfig({ lambda: val });
   const [threshold, setThreshold] = useState(0.9);
   const [last, setLast] = useState<RunResponse | null>(null);
 
@@ -166,7 +167,7 @@ export function LabPage() {
               )}
               {needs('lambda') && (
                 <>
-                  <Field label="λ (risk weight)" htmlFor="lambda">
+                  <Field label="λ (risk weight, shared across tabs)" htmlFor="lambda">
                     <input id="lambda" type="number" min={0} step={0.1} value={lambda} onChange={(e) => setLambda(Number(e.target.value))} />
                   </Field>
                   <Field label="Saturation threshold" htmlFor="threshold">

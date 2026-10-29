@@ -8,10 +8,11 @@ import { strategyColor } from '../utils/colors';
 import { memory, milliseconds, money, percent, titleCase } from '../utils/format';
 
 export function ComparePage() {
-  const { snapshot, scenarios, compare, api, busy, comparison, setComparison } = useApp();
+  const { snapshot, scenarios, compare, api, busy, comparison, setComparison, config, updateConfig } = useApp();
   const strategies = scenarios?.strategies ?? [];
   const [chosen, setChosen] = useState<string[] | null>(null);
-  const [lambda, setLambda] = useState(1);
+  const lambda = config.lambda;
+  const setLambda = (val: number) => updateConfig({ lambda: val });
   const [afterId, setAfterId] = useState('');
   const [history, setHistory] = useState<ResultRow[]>([]);
 
@@ -70,7 +71,7 @@ export function ComparePage() {
           ))}
         </div>
         <div className="row" style={{ marginTop: 12 }}>
-          <Field label="λ for bottleneck-aware" htmlFor="cmp-lambda">
+          <Field label="λ for bottleneck-aware (shared across tabs)" htmlFor="cmp-lambda">
             <input id="cmp-lambda" type="number" min={0} step={0.1} value={lambda} onChange={(e) => setLambda(Number(e.target.value))} />
           </Field>
           <button className="btn primary" disabled={busy || selected.length === 0} onClick={() => void run()}>Run comparison</button>

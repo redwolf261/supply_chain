@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MeanBars } from '../components/Charts';
 import { Field, PageHead } from '../components/Common';
 import { useApp } from '../hooks/useApp';
@@ -27,20 +27,47 @@ function download(name: string, text: string, type: string) {
 }
 
 export function ExperimentsPage() {
-  const { api, scenarios, busy } = useApp();
+  const { api, scenarios, busy, config, updateConfig, snapshot } = useApp();
   const strategies = scenarios?.strategies ?? [];
   const [kind, setKind] = useState<Kind>('random_disruption');
   const [x, setX] = useState(KINDS.random_disruption.fallback);
   const [severity, setSeverity] = useState(0.3);
-  const [net, setNet] = useState(NETWORK_DEFAULTS);
-  const [seed, setSeed] = useState(1);
+  const [net, setNet] = useState({
+    suppliers: config.suppliers,
+    backupSuppliers: config.backupSuppliers,
+    warehouses: config.warehouses,
+    distributionCenters: config.distributionCenters,
+    customers: config.customers,
+    edges: config.edges,
+    capacityFactor: config.capacityFactor,
+    demandMin: config.demandMin,
+    demandMax: config.demandMax,
+  });
+  const [seed, setSeed] = useState(config.seed);
   const [runs, setRuns] = useState(20);
-  const [lambda, setLambda] = useState(1);
+  const lambda = config.lambda;
+  const setLambda = (val: number) => updateConfig({ lambda: val });
   const [chosen, setChosen] = useState<string[] | null>(null);
   const [reference, setReference] = useState('greedy');
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ExperimentResponse | null>(null);
+
+  // Sync with global config whenever config changes in other tabs
+  useEffect(() => {
+    setNet({
+      suppliers: config.suppliers,
+      backupSuppliers: config.backupSuppliers,
+      warehouses: config.warehouses,
+      distributionCenters: config.distributionCenters,
+      customers: config.customers,
+      edges: config.edges,
+      capacityFactor: config.capacityFactor,
+      demandMin: config.demandMin,
+      demandMax: config.demandMax,
+    });
+    setSeed(config.seed);
+  }, [config.suppliers, config.backupSuppliers, config.warehouses, config.distributionCenters, config.customers, config.edges, config.capacityFactor, config.demandMin, config.demandMax, config.seed]);
 
   const selected = chosen ?? strategies.filter((s) => s !== 'exact');
   const k = KINDS[kind];
@@ -65,8 +92,13 @@ export function ExperimentsPage() {
     }
   };
 
+  const handleNetChange = (key: keyof typeof NETWORK_DEFAULTS, val: number) => {
+    setNet((prev) => ({ ...prev, [key]: val }));
+    updateConfig({ [key]: val });
+  };
+
   const num = (key: keyof typeof NETWORK_DEFAULTS, step = 1) => (
-    <input id={`net-${key}`} type="number" step={step} min={0} value={net[key]} onChange={(e) => setNet({ ...net, [key]: Number(e.target.value) })} />
+    <input id={`net-${key}`} type="number" step={step} min={0} value={net[key]} onChange={(e) => handleNetChange(key, Number(e.target.value))} />
   );
   const toggle = (id: string) => setChosen(selected.includes(id) ? selected.filter((s) => s !== id) : [...selected, id]);
 
@@ -83,7 +115,27 @@ export function ExperimentsPage() {
         subtitle="Run a batch of seeded random scenarios. Every strategy solves the identical disrupted network in each run, and every figure below is measured by the C++ engine, shown with its sample size and spread." />
 
       <div className="card">
-        <h2>Configuration</h2>
+        <div className="card-head">
+          <h2>Configuration (Shared Across Tabs)</h2>
+          {snapshot && (
+            <button className="btn small" type="button" onClick={() => {
+              setNet({
+                suppliers: config.suppliers,
+                backupSuppliers: config.backupSuppliers,
+                warehouses: config.warehouses,
+                distributionCenters: config.distributionCenters,
+                customers: config.customers,
+                edges: config.edges,
+                capacityFactor: config.capacityFactor,
+                demandMin: config.demandMin,
+                demandMax: config.demandMax,
+              });
+              setSeed(config.seed);
+            }}>
+              Sync with Active Network ({snapshot.scenario.name})
+            </button>
+          )}
+        </div>
         <div className="row">
           <Field label="Scenario type" htmlFor="exp-kind">
             <select id="exp-kind" value={kind} onChange={(e) => { const next = e.target.value as Kind; setKind(next); setX(KINDS[next].fallback); }}>
@@ -102,10 +154,10 @@ export function ExperimentsPage() {
             <input id="exp-runs" type="number" min={1} max={200} value={runs} onChange={(e) => setRuns(Number(e.target.value))} />
           </Field>
           <Field label="Random seed" htmlFor="exp-seed">
-            <input id="exp-seed" type="number" min={0} value={seed} onChange={(e) => setSeed(Number(e.target.value))} />
+            <input id="exp-seed" type="number" min={0} value={seed} onChange={(e) => { setSeed(Number(e.target.value)); updateConfig({ seed: Number(e.target.value) }); }} />
           </Field>
         </div>
-        <h3 className="muted" style={{ margin: '14px 0 6px' }}>Network</h3>
+        <h3 className="muted" style={{ margin: '14px 0 6px' }}>Network (Shared Variables)</h3>
         <div className="row">
           <Field label="Suppliers" htmlFor="net-suppliers">{num('suppliers')}</Field>
           <Field label="Backup suppliers" htmlFor="net-backupSuppliers">{num('backupSuppliers')}</Field>
@@ -118,7 +170,7 @@ export function ExperimentsPage() {
           <Field label="Supply and route capacity (factor of demand)" htmlFor="net-capacityFactor">{num('capacityFactor', 0.1)}</Field>
           <Field label="Smallest customer demand" htmlFor="net-demandMin">{num('demandMin')}</Field>
           <Field label="Largest customer demand" htmlFor="net-demandMax">{num('demandMax')}</Field>
-          <Field label="λ for bottleneck-aware" htmlFor="exp-lambda">
+          <Field label="λ for bottleneck-aware (shared across tabs)" htmlFor="exp-lambda">
             <input id="exp-lambda" type="number" min={0} step={0.25} value={lambda} onChange={(e) => setLambda(Number(e.target.value))} />
           </Field>
         </div>
