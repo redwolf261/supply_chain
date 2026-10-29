@@ -37,6 +37,7 @@ scx_link_hooked_statically(scx_server)
 # Worked examples of the syllabus modules (DP, backtracking, merge sort, topological sort).
 add_executable(scx_advanced_demo tools/advanced_demo.cpp)
 target_link_libraries(scx_advanced_demo PRIVATE scx_core)
+scx_link_hooked_statically(scx_advanced_demo)
 
 # Command-line experiment runner (hooked + static so each run reports measured peak heap).
 add_executable(scx_experiments tools/experiments_main.cpp $<TARGET_OBJECTS:scx_alloc_hooks>)
@@ -57,7 +58,7 @@ foreach(test_source ${SCX_TEST_SOURCES})
   target_compile_definitions(${test_name} PRIVATE SCX_DATA_DIR="${CMAKE_SOURCE_DIR}/data")
   if(test_name STREQUAL "test_api")
     target_sources(${test_name} PRIVATE $<TARGET_OBJECTS:scx_alloc_hooks>)   # API tests check real memory figures
-    scx_link_hooked_statically(${test_name})
   endif()
+  scx_link_hooked_statically(${test_name})
   add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach()
