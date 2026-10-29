@@ -37,9 +37,70 @@ export const PAGES = [
 ] as const;
 export type PageId = (typeof PAGES)[number]['id'];
 
+export interface SubView {
+  id: PageId;
+  label: string;
+  icon: string;
+}
+
+export interface Workspace {
+  id: string;
+  label: string;
+  icon: string;
+  defaultPage: PageId;
+  views: SubView[];
+}
+
+export const WORKSPACES: Workspace[] = [
+  {
+    id: 'operations',
+    label: 'Network Operations',
+    icon: '🌐',
+    defaultPage: 'network',
+    views: [
+      { id: 'network', label: 'Topology Graph', icon: '◎' },
+      { id: 'disruptions', label: 'Disruption Studio', icon: '⚡' },
+      { id: 'overview', label: 'Metrics Overview', icon: '▦' },
+    ],
+  },
+  {
+    id: 'algorithms',
+    label: 'Optimization & Algorithms',
+    icon: '⚡',
+    defaultPage: 'compare',
+    views: [
+      { id: 'compare', label: 'Strategy Comparison', icon: '⇄' },
+      { id: 'lab', label: 'Algorithm Explorer', icon: '⚗' },
+    ],
+  },
+  {
+    id: 'simulations',
+    label: 'Advanced Simulations',
+    icon: '🔬',
+    defaultPage: 'multiday',
+    views: [
+      { id: 'multiday', label: 'Multi-Day Timeline', icon: '▤' },
+      { id: 'experiments', label: 'Batch Experiments', icon: '∑' },
+    ],
+  },
+  {
+    id: 'learn',
+    label: 'Theory & Guide',
+    icon: '📖',
+    defaultPage: 'learn',
+    views: [
+      { id: 'learn', label: 'Learning Center', icon: '✎' },
+    ],
+  },
+];
+
+export function findWorkspaceForPage(page: PageId): Workspace {
+  return WORKSPACES.find((w) => w.views.some((v) => v.id === page)) ?? WORKSPACES[0];
+}
+
 const fromHash = (): PageId => {
   const id = window.location.hash.replace(/^#\/?/, '');
-  return PAGES.some((p) => p.id === id) ? (id as PageId) : 'overview';
+  return PAGES.some((p) => p.id === id) ? (id as PageId) : 'network';
 };
 
 /** Minimal hash router: #/network etc. Keeps the back button working without a routing dependency. */
