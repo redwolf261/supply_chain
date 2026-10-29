@@ -78,7 +78,7 @@ export function DisruptionPage() {
           {needsPercent(kind) && (
             <div className="row" style={{ marginTop: 10 }}>
               <Field label={`${percentLabel}: ${pct}%`} htmlFor="pct">
-                <input id="pct" type="range" min={kind === 'capacity_reduction' ? 0 : 5} max={kind === 'capacity_reduction' ? 100 : 300} step={5}
+                <input id="pct" type="range" min={kind === 'capacity_reduction' ? 0 : 5} max={kind === 'capacity_reduction' ? 100 : 1000} step={5}
                   value={pct} onChange={(e) => setPct(Number(e.target.value))} />
               </Field>
             </div>
