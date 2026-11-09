@@ -174,6 +174,22 @@ export function NetworkPage() {
         </div>
       </PageHead>
 
+      <div className="active-mode-banner">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span className="active-mode-badge">
+            {viewMode === 'map' ? 'Active: Geographic GIS Map' : 'Active: Topology Flowchart'}
+          </span>
+          <span style={{ fontSize: 12.5, color: 'var(--text-2)' }}>
+            {viewMode === 'map'
+              ? 'Displaying real-world OpenStreetMap highway corridors, moving freight particles, and GPS city coordinates.'
+              : 'Displaying mathematical layered bipartite DAG columns (Suppliers → Warehouses → Distribution Centers → Customers).'}
+          </span>
+        </div>
+        <div className="faint" style={{ fontSize: 11.5 }}>
+          {viewMode === 'map' ? 'Click any facility to trace end-to-end corridor' : 'Click any node to inspect bipartite draw'}
+        </div>
+      </div>
+
       {showPicker && (
         <div style={{ marginBottom: 16 }}>
           <ScenarioPicker />
