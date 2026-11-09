@@ -174,3 +174,8 @@ table.data tr.skipped td { color: var(--text-3); }
   .main { padding: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+/* ---------- Geographic Leaflet Map ---------- */
+.custom-geo-node-icon { background: transparent !important; border: none !important; }
+.leaflet-container { font-family: inherit; z-index: 1; border-radius: 12px; }
+.leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); }

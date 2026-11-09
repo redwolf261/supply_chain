@@ -58,7 +58,7 @@ export const WORKSPACES: Workspace[] = [
     icon: '🌐',
     defaultPage: 'network',
     views: [
-      { id: 'network', label: 'Topology Graph', icon: '◎' },
+      { id: 'network', label: 'Network & Map View', icon: '🗺️' },
       { id: 'disruptions', label: 'Disruption Studio', icon: '⚡' },
       { id: 'overview', label: 'Metrics Overview', icon: '▦' },
     ],

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { EmptyState, PageHead } from '../components/Common';
 import { BOTTLENECK_UTILISATION, NetworkGraph, type Selection } from '../components/NetworkGraph';
+import { GeographicMap } from '../components/GeographicMap';
 import { ScenarioPicker } from '../components/ScenarioPicker';
 import { useApp, NO_HIGHLIGHT } from '../hooks/useApp';
 import type { EdgeDto, NodeDto, SpectralResultDto } from '../types/api';
@@ -109,6 +110,7 @@ export function NetworkPage() {
   const [quick, setQuick] = useState('supplier_failure');
   const [spectral, setSpectral] = useState<SpectralResultDto | null>(null);
   const [showPicker, setShowPicker] = useState(false);
+  const [viewMode, setViewMode] = useState<'map' | 'topology'>('map');
 
   useEffect(() => {
     if (snapshot) {
@@ -138,8 +140,28 @@ export function NetworkPage() {
 
   return (
     <>
-      <PageHead title="Supply Network" subtitle="Directed graph of the live scenario with Laplacian spectral connectivity analysis. Click a node or route to inspect and interact; changes reflect across all tabs.">
-        <div className="row">
+      <PageHead
+        title="Supply Network"
+        subtitle="Live supply chain network mapped to real geographic logistics corridors and topological graph flow. Click any facility or route to inspect, disrupt, or re-route."
+      >
+        <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
+          <div className="seg" role="group" aria-label="Visualization style">
+            <button
+              className={viewMode === 'map' ? 'on' : ''}
+              onClick={() => setViewMode('map')}
+              title="Real-world OpenStreetMap GIS mapping"
+            >
+              🗺️ Geographic Map
+            </button>
+            <button
+              className={viewMode === 'topology' ? 'on' : ''}
+              onClick={() => setViewMode('topology')}
+              title="Abstract bipartite column DAG"
+            >
+              ◎ Topology Flowchart
+            </button>
+          </div>
+
           <select aria-label="Scenario" value={quick} onChange={(e) => setQuick(e.target.value)} style={{ width: 'auto' }}>
             {(scenarios?.standard ?? []).map((s) => <option key={s} value={s}>{titleCase(s)}</option>)}
           </select>
@@ -159,14 +181,28 @@ export function NetworkPage() {
       )}
 
       <div className="grid split">
-        <NetworkGraph network={snapshot.network} selected={selected} onSelect={setSelected} highlight={highlight}
-          fitKey={`${snapshot.scenario.name}:${snapshot.network.nodes.length}`} />
+        {viewMode === 'map' ? (
+          <GeographicMap
+            network={snapshot.network}
+            selected={selected}
+            onSelect={setSelected}
+            highlight={highlight}
+          />
+        ) : (
+          <NetworkGraph
+            network={snapshot.network}
+            selected={selected}
+            onSelect={setSelected}
+            highlight={highlight}
+            fitKey={`${snapshot.scenario.name}:${snapshot.network.nodes.length}`}
+          />
+        )}
         <div className="stack">
           <div className="card">
             <h2>{selected ? (node ? 'Selected node' : 'Selected route') : 'Selection'}</h2>
             {node && <NodeDetails node={node} onApplyEvent={(ev) => void applyEvent(ev)} busy={busy} />}
             {edge && <EdgeDetails edge={edge} onApplyEvent={(ev) => void applyEvent(ev)} busy={busy} />}
-            {!selected && <p className="muted">Nothing selected. Click a node or a route label to inspect or disrupt it.</p>}
+            {!selected && <p className="muted">Nothing selected. Click a facility pin or route on the map to inspect or disrupt it.</p>}
           </div>
           <SpectralCard
             spectral={spectral}
