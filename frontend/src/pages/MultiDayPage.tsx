@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { TimelineChart, type TimelineSeries } from '../components/Charts';
 import { Field, PageHead, Tile } from '../components/Common';
-import { NetworkGraph } from '../components/NetworkGraph';
-import { useApp } from '../hooks/useApp';
+import { NetworkGraph, type Selection } from '../components/NetworkGraph';
+import { GeographicMap } from '../components/GeographicMap';
+import { useApp, NO_HIGHLIGHT } from '../hooks/useApp';
 import type { MultiDayPolicyName, MultiDayResponse } from '../types/api';
 import { strategyColor } from '../utils/colors';
 import { milliseconds, money, percent } from '../utils/format';
@@ -46,6 +47,23 @@ export function MultiDayPage() {
   const [result, setResult] = useState<MultiDayResponse | null>(null);
   const [focus, setFocus] = useState<MultiDayPolicyName | null>(null);
   const [day, setDay] = useState(0);
+  const [viewMode, setViewMode] = useState<'map' | 'topology'>('map');
+  const [selected, setSelected] = useState<Selection>(null);
+  const [isPlayingDay, setIsPlayingDay] = useState(false);
+  const playTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isPlayingDay && result) {
+      playTimerRef.current = window.setInterval(() => {
+        setDay((d) => (d >= result.scenario.horizon - 1 ? 0 : d + 1));
+      }, 1500);
+    } else if (playTimerRef.current) {
+      clearInterval(playTimerRef.current);
+    }
+    return () => {
+      if (playTimerRef.current) clearInterval(playTimerRef.current);
+    };
+  }, [isPlayingDay, result]);
 
   // Sync with global config whenever config changes in other tabs
   useEffect(() => {
@@ -282,14 +300,40 @@ export function MultiDayPage() {
               <div className="card" data-testid="multiday-day">
                 <div className="card-head">
                   <h2>Day {day} under {policyLabel(focusRun.policy)}</h2>
-                  <div className="row">
+                  <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
+                    <div className="seg" role="group" aria-label="Day visualization style">
+                      <button
+                        className={viewMode === 'map' ? 'on' : ''}
+                        onClick={() => setViewMode('map')}
+                        title="Geographic Road & Freight Map"
+                      >
+                        🗺️ Geographic Map
+                      </button>
+                      <button
+                        className={viewMode === 'topology' ? 'on' : ''}
+                        onClick={() => setViewMode('topology')}
+                        title="Topology Flowchart"
+                      >
+                        ◎ Topology Flowchart
+                      </button>
+                    </div>
+
                     <Field label="Policy" htmlFor="md-focus">
                       <select id="md-focus" value={focusRun.policy} onChange={(e) => setFocus(e.target.value as MultiDayPolicyName)}>
                         {runs.map((r) => <option key={r.policy} value={r.policy}>{policyLabel(r.policy)}</option>)}
                       </select>
                     </Field>
+
+                    <button
+                      className={`btn small ${isPlayingDay ? 'danger' : 'primary'}`}
+                      style={{ alignSelf: 'flex-end', marginBottom: 2 }}
+                      onClick={() => setIsPlayingDay(!isPlayingDay)}
+                    >
+                      {isPlayingDay ? '⏸ Pause Timeline' : '▶ Play Timeline'}
+                    </button>
+
                     <Field label={`Day ${day} of ${result.scenario.horizon - 1}`} htmlFor="md-day">
-                      <input id="md-day" type="range" min={0} max={result.scenario.horizon - 1} value={day} onChange={(e) => setDay(Number(e.target.value))} />
+                      <input id="md-day" type="range" min={0} max={result.scenario.horizon - 1} value={day} onChange={(e) => { setIsPlayingDay(false); setDay(Number(e.target.value)); }} />
                     </Field>
                   </div>
                 </div>
@@ -308,8 +352,20 @@ export function MultiDayPage() {
                     Cost split: purchase {money(today.cost.purchase)}, transport {money(today.cost.transport)}, holding {money(today.cost.holding)}, backlog {money(today.cost.backlog)}, actions {money(today.cost.actions)}.
                   </p>
                 )}
-                {network ? <NetworkGraph network={network} fitKey={`${result.scenario.name}-${focusRun.policy}`} />
-                  : <p className="muted">No network snapshot for this run.</p>}
+                {network ? (
+                  viewMode === 'map' ? (
+                    <GeographicMap
+                      network={network}
+                      selected={selected}
+                      onSelect={setSelected}
+                      highlight={NO_HIGHLIGHT}
+                    />
+                  ) : (
+                    <NetworkGraph network={network} fitKey={`${result.scenario.name}-${focusRun.policy}-${day}`} />
+                  )
+                ) : (
+                  <p className="muted">No network snapshot for this run.</p>
+                )}
                 <p className="faint">Route labels: units dispatched today / capacity available today · units still moving. Node cards: stock at the end of the day (customers also show units owed).</p>
               </div>
             </>

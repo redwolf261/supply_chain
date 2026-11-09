@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { MeanBars } from '../components/Charts';
 import { Field, PageHead } from '../components/Common';
-import { useApp } from '../hooks/useApp';
+import { GeographicMap } from '../components/GeographicMap';
+import { type Selection } from '../components/NetworkGraph';
+import { useApp, NO_HIGHLIGHT } from '../hooks/useApp';
 import type { ExperimentResponse } from '../types/api';
 import { strategyColor } from '../utils/colors';
 import { excludesZero, formatPaired, recordsToCsv, responseFilename, summaryToCsv } from '../utils/experimentExport';
@@ -52,6 +54,8 @@ export function ExperimentsPage() {
   const [working, setWorking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ExperimentResponse | null>(null);
+  const [showMap, setShowMap] = useState(false);
+  const [selectedMapNode, setSelectedMapNode] = useState<Selection>(null);
 
   // Sync with global config whenever config changes in other tabs
   useEffect(() => {
@@ -191,12 +195,33 @@ export function ExperimentsPage() {
           <button className="btn primary" disabled={busy || working || selected.length === 0 || overLimit} onClick={() => void run()}>
             {working ? 'Running…' : 'Run experiments'}
           </button>
+          {snapshot && (
+            <button
+              className={`btn ${showMap ? 'primary' : ''}`}
+              type="button"
+              onClick={() => setShowMap(!showMap)}
+            >
+              {showMap ? 'Hide Corridors Map' : '🗺️ View Testbed Geographic Map'}
+            </button>
+          )}
           <span className={overLimit ? 'pill bad' : 'faint'}>
             ≈ {nodes} nodes × {runs} runs = {nodes * runs} (limit 6000, at most 400 nodes and 200 runs)
           </span>
         </div>
         {error && <div className="banner error" role="alert" style={{ marginTop: 12, marginBottom: 0 }}><span>{error}</span></div>}
       </div>
+
+      {showMap && snapshot && (
+        <>
+          <div style={{ height: 16 }} />
+          <GeographicMap
+            network={snapshot.network}
+            selected={selectedMapNode}
+            onSelect={setSelectedMapNode}
+            highlight={NO_HIGHLIGHT}
+          />
+        </>
+      )}
 
       {result && (
         <>
