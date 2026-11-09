@@ -187,6 +187,8 @@ export function NetworkPage() {
             selected={selected}
             onSelect={setSelected}
             highlight={highlight}
+            onApplyEvent={(ev) => void applyEvent(ev)}
+            busy={busy}
           />
         ) : (
           <NetworkGraph

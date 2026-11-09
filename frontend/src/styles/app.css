@@ -179,3 +179,56 @@ table.data tr.skipped td { color: var(--text-3); }
 .custom-geo-node-icon { background: transparent !important; border: none !important; }
 .leaflet-container { font-family: inherit; z-index: 1; border-radius: 12px; }
 .leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.25); }
+
+/* ---------- Cargo Flow Animation for Leaflet ---------- */
+@keyframes cargoFlowAnimation {
+  from { stroke-dashoffset: 48; }
+  to { stroke-dashoffset: 0; }
+}
+.cargo-flow-active {
+  stroke-dasharray: 8, 14 !important;
+  animation: cargoFlowAnimation 1.4s linear infinite;
+}
+.cargo-flow-bottleneck {
+  stroke-dasharray: 6, 10 !important;
+  animation: cargoFlowAnimation 0.9s linear infinite;
+}
+.cargo-flow-traced {
+  stroke-dasharray: 10, 10 !important;
+  animation: cargoFlowAnimation 0.75s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.7));
+}
+.journey-hud {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: 10px;
+  padding: 10px 16px;
+  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.journey-stages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.journey-stage-node {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.journey-stage-arrow {
+  color: #fbbf24;
+  font-size: 11px;
+}
